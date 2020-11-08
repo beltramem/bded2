@@ -8,6 +8,7 @@ public class ImpCompte extends UnicastRemoteObject
             private int nCp;
             private float solde;
             private List<String> listeOp;
+            private DBConnection con;
 
             public void setListeOp(List<String> pListeOp)
             {
@@ -32,18 +33,20 @@ public class ImpCompte extends UnicastRemoteObject
                 return this.listeOp;
             }
 
-            public ImpCompte(int cp, DBConnec) throws RemoteException
+            public ImpCompte(int cp, DBConnection con) throws RemoteException
             {
                 this.nCp= cp;
                 this.solde= 0;
                 this.listeOp= new ArrayList<String>();
+                this.con = con;
             }
 
-            public ImpCompte(int pNcp, float pSolde, ArrayList<String> pListeOp) throws RemoteException
+            public ImpCompte(int pNcp, float pSolde, ArrayList<String> pListeOp, DBConnection con) throws RemoteException
             {
                 this.nCp= pNcp;
                 this.solde= pSolde;
                 this.listeOp= pListeOp;
+                this.con = con;
             } 
 
             public synchronized String Depot(float somme) throws RemoteException
@@ -51,6 +54,8 @@ public class ImpCompte extends UnicastRemoteObject
        		
         	this.setSolde(this.getSolde()+somme);
         	this.listeOp.add("Dépot de "+somme+"€");
+            this.con.UpdateBDCompte(this);
+            this.con.UpdateBDOp(this,"Dépot de "+somme+"€");
             String message = "Vous avez effectuée un dépot de: " + somme + "€";
             return message;
     		}
@@ -60,6 +65,8 @@ public class ImpCompte extends UnicastRemoteObject
     			String message = "Vous avez effectuée un débit de: " + somme + "€";
         		this.setSolde(this.getSolde()-somme);
         		this.listeOp.add("Retrait de "+somme+"€");
+                this.con.UpdateBDCompte(this);
+                this.con.UpdateBDOp(this,"Retrait de "+somme+"€");
                 return message;
     		}
     
@@ -67,6 +74,7 @@ public class ImpCompte extends UnicastRemoteObject
     		{
         		String message = "Compte n°"+this.getNCp()+"\nVotre solde est de: "+this.getSolde() + "€";
                 this.listeOp.add("Consultation du solde");
+                this.con.UpdateBDOp(this,"Consultation du solde");
                 return message;
     		}
     
@@ -74,6 +82,7 @@ public class ImpCompte extends UnicastRemoteObject
     		{
         		String message = "Voici vos dernieres operations: "+this.getListeOp().toString();
                 this.listeOp.add("Consultation des operations");
+                this.con.UpdateBDOp(this,"Consultation des operations");
                 return message;
     		}
 

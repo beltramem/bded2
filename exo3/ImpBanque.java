@@ -25,12 +25,12 @@ public class ImpBanque extends UnicastRemoteObject implements Banque {
                 while(rs.next()) 
                 {
                     System.out.println(rs.getInt(1)+" "+rs.getInt(2)+"\n");
-                    ImpCompte c= new ImpCompte(rs.getInt(1),rs.getInt(2),new ArrayList<String>());
+                    ImpCompte c= new ImpCompte(rs.getInt(1),rs.getInt(2),new ArrayList<String>(), this.con);
                     this.listCompte.add(c);
 
                 }
                 for (ImpCompte cp : this.listCompte) {
-                    rs=getOperation(cp.getNCp);
+                    rs=this.con.getOperation(cp.getNCp());
                     ArrayList<String> listOp = new ArrayList<String>();
                     while(rs.next()) 
                     {
@@ -45,9 +45,13 @@ public class ImpBanque extends UnicastRemoteObject implements Banque {
 
     public synchronized void CreationCompte(int ncp) throws RemoteException
     {
-        ImpCompte c = new ImpCompte(ncp);
+        if(SelectionCompte(ncp)==null)
+        {
+        ImpCompte c = new ImpCompte(ncp,this.con);
         this.listCompte.add(c);
         con.CreationCompte(c);
+                }
+        else System.out.println("Ce numero de compte existe deja");
     }
 
 
