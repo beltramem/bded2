@@ -2,6 +2,8 @@ import java.util.*;
 import java.rmi.*;
 import java.net.*;
 import java.rmi.server.*;
+import java.rmi.registry.Registry;
+import java.rmi.registry.LocateRegistry;
 
 public class ImpBanque extends UnicastRemoteObject implements Banque {
     private List<ImpCompte> listCompte;
@@ -37,6 +39,7 @@ public class ImpBanque extends UnicastRemoteObject implements Banque {
         try {
         ImpBanque s = new ImpBanque();
         String nom = "banque";
+        Registry registry = LocateRegistry.createRegistry(1099);
         Naming.rebind(nom, s); // enregistrement
         System.out.println("Serveur enregistré.");
         } catch (Exception e) {
