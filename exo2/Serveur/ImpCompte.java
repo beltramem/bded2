@@ -52,14 +52,14 @@ public class ImpCompte extends UnicastRemoteObject
                 return message;
     		}
     
-    	    public String Consultation() throws RemoteException
+    	    public synchronized String Consultation() throws RemoteException
     		{
         		String message = "Compte n°"+this.getNCp()+"\nVotre solde est de: "+this.getSolde() + "€";
                 this.listeOp.add("Consultation du solde");
                 return message;
     		}
     
-            public String ConsultationOp() throws RemoteException
+            public synchronized String ConsultationOp() throws RemoteException
     		{
         		String message = "Voici vos dernieres operations: "+this.getListeOp().toString();
                 this.listeOp.add("Consultation des operations");
